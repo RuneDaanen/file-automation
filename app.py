@@ -1,21 +1,53 @@
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+from decouple import config
 
 import os
 import json
 import time
 
+icon_format = [".svg"]
+image_format = [".jpeg", ".png"]
+program_format = [".apk", ".dmg"]
+documents_format = [".word", ".txt"]
+
 class MyHandler(FileSystemEventHandler):
   def on_modified(self, event):
     for filename in os.listdir(folder_to_track):
+      folder_destination = folder_default_destination
+      
+      icon_file = any(ext in filename for ext in icon_format)
+      image_file = any(ext in filename for ext in image_format)
+      program_file = any(ext in filename for ext in program_format)
+      documents_file = any(ext in filename for ext in documents_format)
+
+      if (icon_file):
+        folder_destination = folder_icon_destination
+      elif (image_file):
+        folder_destination = folder_image_destination
+      elif (program_file):
+        folder_destination = folder_program_destination
+      elif (documents_file):
+        folder_destination = folder_documents_destination
+      else:
+        print(f"file: {filename}")
+
       src = folder_to_track + "/" + filename
       new_destination = folder_destination + "/" + filename
+      
       os.rename(src, new_destination)
 
-folder_to_track = "/Users/thor/Desktop/myFolder"
-folder_destination = "/Users/thor/Desktop/newFolder"
+folder_to_track = config('TRACK_FOLDER')
+
+folder_default_destination = config('TEST_DESTINATION_FOLDER')
+folder_icon_destination = config('DESTINATION_ICON_FOLDER')
+folder_image_destination = config('DESTINATION_IMAGE_FOLDER')
+folder_program_destination = config('DESTINATION_PROGRAM_FOLDER')
+folder_documents_destination = config('DESTINATION_DOCUMENTS_FOLDER')
+
 event_handler = MyHandler()
 observer = Observer()
+
 observer.schedule(event_handler, folder_to_track, recursive=True)
 observer.start()
 
