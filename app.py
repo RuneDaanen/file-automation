@@ -10,6 +10,15 @@ icon_format = [".svg"]
 image_format = [".jpeg", ".png"]
 program_format = [".apk", ".dmg"]
 documents_format = [".word", ".txt"]
+#TODO Save formats in database
+
+folder_to_track = config('TRACK_FOLDER')
+
+folder_default_destination = config('DESTINATION_FOLDER')
+folder_icon_destination = config('DESTINATION_ICON_FOLDER')
+folder_image_destination = config('DESTINATION_IMAGE_FOLDER')
+folder_program_destination = config('DESTINATION_PROGRAM_FOLDER')
+folder_documents_destination = config('DESTINATION_DOCUMENTS_FOLDER')
 
 class MyHandler(FileSystemEventHandler):
   def on_modified(self, event):
@@ -31,19 +40,12 @@ class MyHandler(FileSystemEventHandler):
         folder_destination = folder_documents_destination
       else:
         print(f"file: {filename}")
+        #TODO popup and select where you want to store the file 
 
       src = folder_to_track + "/" + filename
       new_destination = folder_destination + "/" + filename
       
       os.rename(src, new_destination)
-
-folder_to_track = config('TRACK_FOLDER')
-
-folder_default_destination = config('TEST_DESTINATION_FOLDER')
-folder_icon_destination = config('DESTINATION_ICON_FOLDER')
-folder_image_destination = config('DESTINATION_IMAGE_FOLDER')
-folder_program_destination = config('DESTINATION_PROGRAM_FOLDER')
-folder_documents_destination = config('DESTINATION_DOCUMENTS_FOLDER')
 
 event_handler = MyHandler()
 observer = Observer()
