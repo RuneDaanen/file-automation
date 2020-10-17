@@ -2,6 +2,8 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from decouple import config
 
+from classes.cleaner import cleaner
+
 import os
 import json
 import time
@@ -24,23 +26,27 @@ class MyHandler(FileSystemEventHandler):
   def on_modified(self, event):
     for filename in os.listdir(folder_to_track):
       folder_destination = folder_default_destination
-      
-      icon_file = any(ext in filename for ext in icon_format)
-      image_file = any(ext in filename for ext in image_format)
-      program_file = any(ext in filename for ext in program_format)
-      documents_file = any(ext in filename for ext in documents_format)
 
-      if (icon_file):
-        folder_destination = folder_icon_destination
-      elif (image_file):
-        folder_destination = folder_image_destination
-      elif (program_file):
-        folder_destination = folder_program_destination
-      elif (documents_file):
-        folder_destination = folder_documents_destination
-      else:
-        print(f"file: {filename}")
-        #TODO popup and select where you want to store the file 
+      cleaner = Cleaners(filename)
+
+
+      
+      # icon_file = any(ext in filename for ext in icon_format)
+      # image_file = any(ext in filename for ext in image_format)
+      # program_file = any(ext in filename for ext in program_format)
+      # documents_file = any(ext in filename for ext in documents_format)
+
+      # if (icon_file):
+      #   folder_destination = folder_icon_destination
+      # elif (image_file):
+      #   folder_destination = folder_image_destination
+      # elif (program_file):
+      #   folder_destination = folder_program_destination
+      # elif (documents_file):
+      #   folder_destination = folder_documents_destination
+      # else:
+      #   print(f"file: {filename}")
+      #   #TODO popup and select where you want to store the file 
 
       src = folder_to_track + "/" + filename
       new_destination = folder_destination + "/" + filename
